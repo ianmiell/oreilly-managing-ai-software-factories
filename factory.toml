@@ -37,14 +37,19 @@ max_attempts = 3
 
 [review]
 mode = "replay"                    # "replay" or "cli"
-reviewers = ["general"]
+reviewers = ["correctness", "security", "conventions"]
 timeout_seconds = 300
 command = ["claude", "-p", "--output-format", "json", "--allowedTools", "Read,Grep,Glob"]
 
 [review.focus]
 general = "Is this change correct, safe, and consistent with the conventions?"
+correctness = "Does the change fully implement the issue, including requirements the tests may not cover?"
+security = "Could the change introduce unsafe input handling, secrets, or risky dependencies?"
+conventions = "Does the change follow AGENTS.md and keep the diff minimal?"
 
 [pr]
 mode = "local"                     # "local" writes a PR summary file, "github" pushes and opens a draft PR
 local_dir = ".factory/prs"
 
+[state]
+db = ".factory/state.db"

@@ -35,6 +35,9 @@ def main() -> None:
     run_p = sub.add_parser("run", help="run the factory on one issue")
     run_p.add_argument("issue", help="issue id prefix, e.g. 001, or a GitHub issue number")
     sub.add_parser("run-all", help="run every local issue in order")
+    sub.add_parser("report", help="show runs and cost per accepted PR")
+    acc = sub.add_parser("accept", help="record that a human merged an issue's PR")
+    acc.add_argument("issue")
     args = parser.parse_args()
     cfg = config.load(args.config)
 
@@ -48,6 +51,15 @@ def main() -> None:
         for ref in intake.all_refs(cfg):
             orchestrator.run(cfg, ref)
             print()
+    elif args.command in ("report", "accept"):
+        from factory.state import Store
+        store = Store(cfg)
+        if args.command == "report":
+            print(store.report())
+        elif store.accept(args.issue):
+            print(f"Marked {args.issue} as merged.")
+        else:
+            print(f"No opened PR found for {args.issue}.")
 
 
 if __name__ == "__main__":

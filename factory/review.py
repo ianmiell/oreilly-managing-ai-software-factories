@@ -1,6 +1,7 @@
-"""Stage 6: review. One LLM reviewer, judged by code."""
+"""Stage 6: review. A panel of LLM reviewers, run in parallel, merged by code."""
 
 import json
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 
 from factory import agent, context, sandbox
@@ -17,13 +18,24 @@ class Verdict:
     error: str | None = None
 
 
-def run(cfg, wt, issue, attempt: int) -> Verdict:
+@dataclass
+class PanelResult:
+    approve: bool
+    verdicts: list[Verdict]
+
+
+def run_panel(cfg, wt, issue, attempt: int) -> PanelResult:
     diff = sandbox.diff(wt)
-    verdict = review_one(cfg, wt, issue, attempt, cfg["review"]["reviewers"][0], diff)
-    # A reviewer must not change the code it is judging.
+    reviewers = cfg["review"]["reviewers"]
+    with ThreadPoolExecutor(max_workers=len(reviewers)) as pool:
+        verdicts = list(pool.map(lambda r: review_one(cfg, wt, issue, attempt, r, diff), reviewers))
+
+    # Reviewers must not change the code they are judging.
     if sandbox.diff(wt) != diff:
-        return Verdict("factory", False, error="The reviewer modified the worktree.")
-    return verdict
+        verdicts.append(Verdict("factory", False, error="A reviewer modified the worktree."))
+
+    # The merge rule lives in code: every reviewer must approve.
+    return PanelResult(approve=all(v.approve for v in verdicts), verdicts=verdicts)
 
 
 def review_one(cfg, wt, issue, attempt: int, reviewer: str, diff: str) -> Verdict:
@@ -83,7 +95,11 @@ def _extract_json(text: str):
         raise ValueError(f"malformed JSON: {exc}") from exc
 
 
-def feedback(v: Verdict) -> str:
-    lines = [f"- [{v.reviewer}] {v.error}"] if v.error else []
-    lines += [f"- [{v.reviewer}] {i['severity']}: {i.get('file', '')} {i['message']}".rstrip() for i in v.issues]
+def feedback(result: PanelResult) -> str:
+    lines = []
+    for v in result.verdicts:
+        if v.error:
+            lines.append(f"- [{v.reviewer}] {v.error}")
+        for i in v.issues:
+            lines.append(f"- [{v.reviewer}] {i['severity']}: {i.get('file', '')} {i['message']}".rstrip())
     return "Code review rejected the change:\n" + "\n".join(lines)
