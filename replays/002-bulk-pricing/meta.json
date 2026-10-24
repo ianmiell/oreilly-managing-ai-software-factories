@@ -1,0 +1,12 @@
+{
+  "attempt-1": {
+    "summary": "Added BULK_QTY and BULK_DISCOUNT; applied 5% off lines over the threshold.",
+    "cost_usd": 0.34,
+    "seconds": 71
+  },
+  "attempt-2": {
+    "summary": "Fixed the threshold comparison to be inclusive and added a regression test.",
+    "cost_usd": 0.19,
+    "seconds": 39
+  }
+}

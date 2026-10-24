@@ -1,0 +1,28 @@
+# Software factory configuration.
+# Relative paths are resolved from the directory containing this file.
+
+prompts_dir = "prompts"
+
+[target]
+repo = ".demo/target"              # created by `python -m factory setup`
+base_branch = "main"
+worktrees_dir = ".demo/worktrees"
+
+[intake]
+source = "local"                   # "local" reads issues/<id>/issue.md, "github" uses `gh issue view`
+issues_dir = "issues"
+
+[agent]
+mode = "replay"                    # "replay" (no API key needed) or "cli" (a real coding agent)
+replays_dir = "replays"
+replay_delay_seconds = 1.5         # makes replayed runs feel live on stage
+timeout_seconds = 900
+# Command for "cli" mode. If no part contains {prompt}, the prompt is sent on stdin.
+# Check these flags against the version of your agent CLI.
+command = ["claude", "-p", "--output-format", "json", "--permission-mode", "acceptEdits"]
+# command = ["codex", "exec", "--full-auto", "-"]
+
+[pr]
+mode = "local"                     # "local" writes a PR summary file, "github" pushes and opens a draft PR
+local_dir = ".factory/prs"
+

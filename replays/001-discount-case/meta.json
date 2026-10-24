@@ -1,0 +1,7 @@
+{
+  "attempt-1": {
+    "summary": "Normalised discount codes with strip().upper() before lookup.",
+    "cost_usd": 0.21,
+    "seconds": 48
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "attempt-1": {
+    "summary": "Formatted tax and total as 2dp strings; updated the discount test to match.",
+    "cost_usd": 0.29,
+    "seconds": 63
+  },
+  "attempt-2": {
+    "summary": "Kept float return types and rounded tax and total with round(x, 2).",
+    "cost_usd": 0.24,
+    "seconds": 52
+  },
+  "attempt-3": {
+    "summary": "Added a _money() helper using Decimal with ROUND_HALF_UP, plus tests.",
+    "cost_usd": 0.31,
+    "seconds": 66
+  }
+}

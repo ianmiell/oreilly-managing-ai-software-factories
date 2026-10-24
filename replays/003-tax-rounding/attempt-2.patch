@@ -1,0 +1,14 @@
+diff --git a/shopcart/cart.py b/shopcart/cart.py
+index 6cbc61e..a7a9d8b 100644
+--- a/shopcart/cart.py
++++ b/shopcart/cart.py
+@@ -35,7 +35,7 @@ class Cart:
+         return self.subtotal() * (1 - self.discount)
+ 
+     def tax(self) -> float:
+-        return self._discounted() * TAX_RATE
++        return round(self._discounted() * TAX_RATE, 2)
+ 
+     def total(self) -> float:
+-        return self._discounted() + self.tax()
++        return round(self._discounted() * (1 + TAX_RATE), 2)

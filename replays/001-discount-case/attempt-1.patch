@@ -1,0 +1,12 @@
+diff --git a/shopcart/cart.py b/shopcart/cart.py
+index 6cbc61e..157fb4e 100644
+--- a/shopcart/cart.py
++++ b/shopcart/cart.py
+@@ -27,6 +27,7 @@ class Cart:
+         return sum(item.unit_price * item.qty for item in self.items)
+ 
+     def apply_discount(self, code: str) -> None:
++        code = code.strip().upper()
+         if code not in DISCOUNT_CODES:
+             raise ValueError(f"unknown discount code: {code}")
+         self.discount = DISCOUNT_CODES[code]

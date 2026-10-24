@@ -1,0 +1,10 @@
+{
+  "approve": false,
+  "issues": [
+    {
+      "severity": "blocker",
+      "file": "shopcart/cart.py",
+      "message": "round() uses banker's rounding (round(0.125, 2) == 0.12), but the issue requires half up (0.125 -> 0.13). The acceptance tests do not cover this case."
+    }
+  ]
+}

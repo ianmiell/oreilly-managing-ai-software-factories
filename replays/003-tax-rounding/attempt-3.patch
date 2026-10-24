@@ -1,0 +1,44 @@
+diff --git a/shopcart/cart.py b/shopcart/cart.py
+index 6cbc61e..0e9e247 100644
+--- a/shopcart/cart.py
++++ b/shopcart/cart.py
+@@ -1,11 +1,17 @@
+ """A tiny shopping cart: the demo target for the software factory."""
+ 
+ from dataclasses import dataclass, field
++from decimal import ROUND_HALF_UP, Decimal
+ 
+ DISCOUNT_CODES = {"SAVE10": 0.10, "SAVE25": 0.25}
+ TAX_RATE = 0.2
+ 
+ 
++def _money(value: float) -> float:
++    """Round a money amount to 2 decimal places, half up."""
++    return float(Decimal(str(value)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
++
++
+ @dataclass
+ class LineItem:
+     sku: str
+@@ -35,7 +41,7 @@ class Cart:
+         return self.subtotal() * (1 - self.discount)
+ 
+     def tax(self) -> float:
+-        return self._discounted() * TAX_RATE
++        return _money(self._discounted() * TAX_RATE)
+ 
+     def total(self) -> float:
+-        return self._discounted() + self.tax()
++        return _money(self._discounted() * (1 + TAX_RATE))
+diff --git a/tests/test_money.py b/tests/test_money.py
+new file mode 100644
+index 0000000..382cdbf
+--- /dev/null
++++ b/tests/test_money.py
+@@ -0,0 +1,6 @@
++from shopcart.cart import _money
++
++
++def test_half_up():
++    assert _money(0.125) == 0.13
++    assert _money(0.124) == 0.12

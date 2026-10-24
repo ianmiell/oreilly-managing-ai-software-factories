@@ -1,0 +1,28 @@
+diff --git a/shopcart/cart.py b/shopcart/cart.py
+index 6cbc61e..6081eb8 100644
+--- a/shopcart/cart.py
++++ b/shopcart/cart.py
+@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
+ 
+ DISCOUNT_CODES = {"SAVE10": 0.10, "SAVE25": 0.25}
+ TAX_RATE = 0.2
++BULK_QTY = 10
++BULK_DISCOUNT = 0.05
+ 
+ 
+ @dataclass
+@@ -24,7 +26,13 @@ class Cart:
+         self.items.append(LineItem(sku, unit_price, qty))
+ 
+     def subtotal(self) -> float:
+-        return sum(item.unit_price * item.qty for item in self.items)
++        total = 0.0
++        for item in self.items:
++            line = item.unit_price * item.qty
++            if item.qty > BULK_QTY:
++                line *= 1 - BULK_DISCOUNT
++            total += line
++        return total
+ 
+     def apply_discount(self, code: str) -> None:
+         if code not in DISCOUNT_CODES:

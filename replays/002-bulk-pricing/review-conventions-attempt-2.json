@@ -1,0 +1,10 @@
+{
+  "approve": true,
+  "issues": [
+    {
+      "severity": "minor",
+      "file": "shopcart/cart.py",
+      "message": "Consider a short comment explaining that bulk pricing applies before discount codes."
+    }
+  ]
+}
