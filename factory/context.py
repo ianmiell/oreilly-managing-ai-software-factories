@@ -23,3 +23,10 @@ def _common(issue, wt) -> dict:
 
 def implement_prompt(cfg, issue, wt) -> str:
     return _template(cfg, "implement.md").substitute(_common(issue, wt))
+
+
+def retry_prompt(cfg, issue, wt, feedback: str, attempt: int) -> str:
+    return _template(cfg, "retry.md").substitute(
+        _common(issue, wt), feedback=feedback, attempt=attempt,
+        max_attempts=cfg["retry"]["max_attempts"],
+    )

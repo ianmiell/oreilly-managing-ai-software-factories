@@ -32,6 +32,9 @@ timeout_seconds = 300
 protected_paths = ["tests/"]       # agent may add files here, never modify or delete them
 acceptance_dir = "tests/acceptance"
 
+[retry]
+max_attempts = 3
+
 [pr]
 mode = "local"                     # "local" writes a PR summary file, "github" pushes and opens a draft PR
 local_dir = ".factory/prs"
