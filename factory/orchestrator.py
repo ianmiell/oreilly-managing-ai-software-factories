@@ -1,6 +1,6 @@
 """The deterministic skeleton. Every decision about what happens next is an `if` here."""
 
-from factory import agent, context, intake, pr, sandbox
+from factory import agent, context, gates, intake, pr, sandbox
 from factory.log import block, log
 
 
@@ -23,17 +23,25 @@ def run(cfg, issue_ref: str) -> str:
             return "escalated"
         log("agent", f"done in {result.seconds:.0f}s, {result.cost_usd:.2f} USD: {result.output}")
 
-        # Nothing checks the agent's work: whatever it produced goes straight to a PR.
-        ref = pr.open_draft(cfg, wt, issue, _summary(issue, wt, result))
+        gate = gates.run(cfg, wt, issue)
+        for name, ok in gate.checks:
+            log("gate", f"{'PASS' if ok else 'FAIL'}  {name}")
+        if not gate.passed:
+            block(gate.report)
+            pr.park(wt, issue, gate.report)
+            log("escalate", f"gates failed; work parked on {wt.branch} for a human")
+            return "escalated"
+
+        ref = pr.open_draft(cfg, wt, issue, _summary(issue, wt, result, gate))
         log("pr", f"draft PR ready: {ref}")
         return "pr_opened"
     finally:
         sandbox.remove(wt)
 
 
-def _summary(issue, wt, result) -> str:
-    return "\n".join([
-        f"# {issue.title}", "", f"Branch: `{wt.branch}`  ", f"Issue: `{issue.slug}`", "",
-        f"Agent summary: {result.output}", "",
-        "_Opened as a draft by the software factory. A human must review and merge._", "",
-    ])
+def _summary(issue, wt, result, gate) -> str:
+    lines = [f"# {issue.title}", "", f"Branch: `{wt.branch}`  ", f"Issue: `{issue.slug}`", "",
+             f"Agent summary: {result.output}", "", "## Checks", ""]
+    lines += [f"- {'PASS' if ok else 'FAIL'}: {name}" for name, ok in gate.checks]
+    lines += ["", "_Opened as a draft by the software factory. A human must review and merge._", ""]
+    return "\n".join(lines)
