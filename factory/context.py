@@ -30,3 +30,9 @@ def retry_prompt(cfg, issue, wt, feedback: str, attempt: int) -> str:
         _common(issue, wt), feedback=feedback, attempt=attempt,
         max_attempts=cfg["retry"]["max_attempts"],
     )
+
+
+def review_prompt(cfg, issue, wt, reviewer: str, diff: str) -> str:
+    return _template(cfg, "review.md").substitute(
+        _common(issue, wt), focus=cfg["review"]["focus"][reviewer], diff=diff,
+    )

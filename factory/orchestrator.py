@@ -1,6 +1,6 @@
 """The deterministic skeleton. Every decision about what happens next is an `if` here."""
 
-from factory import agent, context, gates, intake, pr, sandbox
+from factory import agent, context, gates, intake, pr, review, sandbox
 from factory.log import block, log
 
 
@@ -33,12 +33,22 @@ def run(cfg, issue_ref: str) -> str:
             if not gate.passed:
                 block(gate.report)
                 history.append((attempt, "rejected by gates", result.cost_usd))
-                # The failure output becomes the next prompt: the loop that makes agents useful.
                 prompt = context.retry_prompt(cfg, issue, wt, gate.report, attempt)
                 continue
 
-            history.append((attempt, "accepted", result.cost_usd))
-            ref = pr.open_draft(cfg, wt, issue, _summary(issue, wt, history))
+            # Review only runs on work that already passed every deterministic check.
+            verdict = review.run(cfg, wt, issue, attempt)
+            log("review", f"{'APPROVE' if verdict.approve else 'REJECT '}  {verdict.reviewer}")
+            cost = result.cost_usd + verdict.cost_usd
+            if not verdict.approve:
+                notes = review.feedback(verdict)
+                block(notes)
+                history.append((attempt, "rejected in review", cost))
+                prompt = context.retry_prompt(cfg, issue, wt, notes, attempt)
+                continue
+
+            history.append((attempt, "accepted", cost))
+            ref = pr.open_draft(cfg, wt, issue, _summary(issue, wt, history, verdict))
             log("pr", f"draft PR ready: {ref}")
             return "pr_opened"
 
@@ -49,9 +59,11 @@ def run(cfg, issue_ref: str) -> str:
         sandbox.remove(wt)
 
 
-def _summary(issue, wt, history) -> str:
+def _summary(issue, wt, history, verdict) -> str:
     lines = [f"# {issue.title}", "", f"Branch: `{wt.branch}`  ", f"Issue: `{issue.slug}`", "",
              "## Attempts", "", "| # | Result | Cost (USD) |", "|---|---|---|"]
     lines += [f"| {n} | {outcome} | {cost:.2f} |" for n, outcome, cost in history]
+    lines += ["", "## Review", "", f"- **{verdict.reviewer}**: approved"]
+    lines += [f"  - {i['severity']}: {i['message']}" for i in verdict.issues]
     lines += ["", "_Opened as a draft by the software factory. A human must review and merge._", ""]
     return "\n".join(lines)

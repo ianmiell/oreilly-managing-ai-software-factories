@@ -35,6 +35,15 @@ acceptance_dir = "tests/acceptance"
 [retry]
 max_attempts = 3
 
+[review]
+mode = "replay"                    # "replay" or "cli"
+reviewers = ["general"]
+timeout_seconds = 300
+command = ["claude", "-p", "--output-format", "json", "--allowedTools", "Read,Grep,Glob"]
+
+[review.focus]
+general = "Is this change correct, safe, and consistent with the conventions?"
+
 [pr]
 mode = "local"                     # "local" writes a PR summary file, "github" pushes and opens a draft PR
 local_dir = ".factory/prs"
