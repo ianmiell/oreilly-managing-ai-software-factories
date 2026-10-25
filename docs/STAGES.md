@@ -4,7 +4,7 @@ Before each stage:
 
 ```bash
 git checkout <branch>
-python -m factory reset && python -m factory setup
+uv run python -m factory reset && uv run python -m factory setup
 ```
 
 ---
@@ -13,7 +13,7 @@ python -m factory reset && python -m factory setup
 
 **Adds:** intake, worktree, one agent run, draft PR.
 
-**Run:** `python -m factory run-all`
+**Run:** `uv run python -m factory run-all`
 
 **Expected:** all three issues produce a PR.
 
@@ -70,7 +70,7 @@ half up. Every test passed because the acceptance tests had a gap.
 
 **Diff:** `git diff stage-3-retry stage-4-review -- factory/ prompts/`
 
-**Run:** `python -m factory run 003`
+**Run:** `uv run python -m factory run 003`
 
 **Expected:** attempt 1 rejected by gates, attempt 2 **rejected in review** for banker's
 rounding, attempt 3 accepted.
@@ -91,9 +91,9 @@ and a cost report.
 **Run:**
 
 ```bash
-python -m factory run-all
-python -m factory accept 001
-python -m factory report
+uv run python -m factory run-all
+uv run python -m factory accept 001
+uv run python -m factory report
 ```
 
 **Expected:** only the correctness reviewer rejects `003` attempt 2. The conventions reviewer

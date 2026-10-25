@@ -75,5 +75,5 @@ class Store:
         if opened:
             lines.append(f"Cost per opened PR:   {total / opened:.2f} USD")
         lines.append(f"Cost per accepted PR: {total / merged:.2f} USD" if merged
-                     else "Cost per accepted PR: n/a (mark merges with `python -m factory accept <issue>`)")
+                     else "Cost per accepted PR: n/a (mark merges with `uv run python -m factory accept <issue>`)")
         return "\n".join(lines)

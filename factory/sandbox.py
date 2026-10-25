@@ -23,7 +23,7 @@ class Worktree:
 def create(cfg, issue) -> Worktree:
     repo = cfg.path(cfg["target"]["repo"])
     if not (repo / ".git").exists():
-        raise SystemExit(f"No target repo at {repo}. Run `python -m factory setup` first.")
+        raise SystemExit(f"No target repo at {repo}. Run `uv run python -m factory setup` first.")
     base = git(repo, "rev-parse", cfg["target"]["base_branch"]).stdout.strip()
     branch = f"factory/{issue.slug}"
     path = cfg.path(cfg["target"]["worktrees_dir"]) / issue.slug
