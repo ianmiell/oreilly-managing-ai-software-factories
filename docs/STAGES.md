@@ -4,12 +4,24 @@ Before each stage:
 
 ```bash
 git checkout <branch>
-python -m factory reset && python -m factory setup
+uv run python -m factory reset
+uv run python -m factory setup
 ```
 
 ---
 
 ## Stage 1: `stage-1-naive`
+
+```bash
+git checkout stage-1-naive
+uv run python -m factory reset
+uv run python -m factory setup
+uv run python -m factory run 003
+uv run python -m factory run-all
+uv run python -m factory reset
+```
+
+**Code:** `factory/__main__.py` and `orchestrator.run()`
 
 **Adds:** intake, worktree, one agent run, draft PR.
 
