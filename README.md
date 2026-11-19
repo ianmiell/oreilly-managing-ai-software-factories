@@ -15,15 +15,19 @@ issue ─► worktree ─► agent ─► gates ─► review panel ─► draft
 
 ## Quick start (no API key needed)
 
-Requires Python 3.11+ and git.
+Requires [uv](https://docs.astral.sh/uv/) and git. uv installs Python 3.11 if you
+don't already have it.
+
+These are commands that can be run to demonstrate various actions on various branches.
 
 ```bash
-pip install -r requirements.txt
-python -m factory setup      # creates a demo repo in .demo/target
-python -m factory run 003    # watch one issue go through every stage
-python -m factory run-all    # or run all three demo issues
-python -m factory report     # spend, attempts and cost per accepted PR
-python -m factory reset      # start again
+uv venv --python 3.11                  # creates .venv
+uv pip install -r requirements.txt
+uv run python -m factory setup         # creates a demo repo in .demo/target
+uv run python -m factory run 003       # watch one issue go through every stage
+uv run python -m factory run-all       # or run all three demo issues
+uv run python -m factory report        # spend, attempts and cost per accepted PR
+uv run python -m factory reset         # start again
 ```
 
 By default the agent and reviewers run in **replay mode**: they apply recorded patches
@@ -44,8 +48,8 @@ Each branch adds one idea. Diff any two to see exactly what changed.
 
 ```bash
 git checkout stage-2-gates
-python -m factory reset && python -m factory setup
-python -m factory run-all
+uv run python -m factory reset && uv run python -m factory setup
+uv run python -m factory run-all
 git diff stage-1-naive stage-2-gates -- factory/
 ```
 
