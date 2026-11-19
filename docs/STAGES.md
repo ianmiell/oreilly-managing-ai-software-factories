@@ -12,20 +12,9 @@ uv run python -m factory setup
 
 ## Stage 1: `stage-1-naive`
 
-```bash
-git checkout stage-1-naive
-uv run python -m factory reset
-uv run python -m factory setup
-uv run python -m factory run 003
-uv run python -m factory run-all
-uv run python -m factory reset
-```
-
-**Code:** `factory/__main__.py` and `orchestrator.run()`
-
 **Adds:** intake, worktree, one agent run, draft PR.
 
-**Run:** `python -m factory run-all`
+**Run:** `uv run python -m factory run-all`
 
 **Expected:** all three issues produce a PR.
 
@@ -41,6 +30,11 @@ Show the diff of `003` on its branch:
 ---
 
 ## Stage 2: `stage-2-gates`
+
+```bash
+git checkout stage-2-gates
+uv run python -m factory reset && uv run python -m factory setup
+```
 
 **Adds:** `gates.py`: tests, lint, protected paths and human-written acceptance tests.
 
@@ -58,6 +52,11 @@ tests. But stopping at the first failure wastes the run.
 ---
 
 ## Stage 3: `stage-3-retry`
+
+```bash
+git checkout stage-3-retry
+uv run python -m factory reset && uv run python -m factory setup
+```
 
 **Adds:** a retry loop that feeds the gate output back to the agent (max 3 attempts).
 
@@ -78,11 +77,16 @@ half up. Every test passed because the acceptance tests had a gap.
 
 ## Stage 4: `stage-4-review`
 
+```bash
+git checkout stage-4-review
+uv run python -m factory reset && uv run python -m factory setup
+```
+
 **Adds:** `review.py`: one LLM reviewer that must return JSON, validated in code, failing closed.
 
 **Diff:** `git diff stage-3-retry stage-4-review -- factory/ prompts/`
 
-**Run:** `python -m factory run 003`
+**Run:** `uv run python -m factory run 003`
 
 **Expected:** attempt 1 rejected by gates, attempt 2 **rejected in review** for banker's
 rounding, attempt 3 accepted.
@@ -95,6 +99,11 @@ approval rule is still code: a reviewer that approves while listing a blocker is
 
 ## Stage 5: `stage-5-panel` (also `main`)
 
+```bash
+git checkout stage-5-panel
+uv run python -m factory reset && uv run python -m factory setup
+```
+
 **Adds:** a panel of reviewers in parallel (correctness, security, conventions), SQLite state,
 and a cost report.
 
@@ -103,9 +112,9 @@ and a cost report.
 **Run:**
 
 ```bash
-python -m factory run-all
-python -m factory accept 001
-python -m factory report
+uv run python -m factory run-all
+uv run python -m factory accept 001
+uv run python -m factory report
 ```
 
 **Expected:** only the correctness reviewer rejects `003` attempt 2. The conventions reviewer
