@@ -1,4 +1,4 @@
-"""Stage 3: context. Build prompts from templates; nothing is improvised."""
+"""Step 3: context. Build prompts from templates; nothing is improvised."""
 
 from string import Template
 

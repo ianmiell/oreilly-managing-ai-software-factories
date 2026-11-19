@@ -1,4 +1,4 @@
-"""Stage 1: intake. Turn an issue reference into an Issue."""
+"""Step 1: intake. Turn an issue reference into an Issue."""
 
 import json
 import subprocess

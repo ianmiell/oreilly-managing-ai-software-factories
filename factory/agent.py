@@ -1,4 +1,4 @@
-"""Stage 4: implement. Run a coding agent, or replay a recorded run."""
+"""Step 4: implement. Run a coding agent, or replay a recorded run."""
 
 import json
 import subprocess

@@ -1,4 +1,4 @@
-"""Stage 6: review. One LLM reviewer, judged by code."""
+"""Step 6: review. One LLM reviewer, judged by code."""
 
 import json
 from dataclasses import dataclass, field

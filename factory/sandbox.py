@@ -1,4 +1,4 @@
-"""Stage 2: sandbox. Every issue gets its own git worktree and branch."""
+"""Step 2: sandbox. Every issue gets its own git worktree and branch."""
 
 import subprocess
 from dataclasses import dataclass

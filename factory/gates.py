@@ -1,4 +1,4 @@
-"""Stage 5: gates. Code decides pass or fail; the agent's opinion is never asked."""
+"""Step 5: gates. Code decides pass or fail; the agent's opinion is never asked."""
 
 import shutil
 import subprocess

@@ -1,4 +1,4 @@
-"""Stage 7: hand off. Commit, then open a draft PR. A human always merges."""
+"""Step 7: hand off. Commit, then open a draft PR. A human always merges."""
 
 import subprocess
 
