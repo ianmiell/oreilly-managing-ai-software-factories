@@ -18,6 +18,8 @@ issue ─► worktree ─► agent ─► gates ─► review panel ─► draft
 Requires [uv](https://docs.astral.sh/uv/) and git. uv installs Python 3.11 if you
 don't already have it.
 
+These are commands that can be run to demonstrate various actions on various branches.
+
 ```bash
 uv venv --python 3.11                  # creates .venv
 uv pip install -r requirements.txt

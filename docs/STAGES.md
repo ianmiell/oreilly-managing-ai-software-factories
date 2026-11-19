@@ -4,7 +4,8 @@ Before each stage:
 
 ```bash
 git checkout <branch>
-uv run python -m factory reset && uv run python -m factory setup
+uv run python -m factory reset
+uv run python -m factory setup
 ```
 
 ---
@@ -30,6 +31,11 @@ Show the diff of `003` on its branch:
 
 ## Stage 2: `stage-2-gates`
 
+```bash
+git checkout stage-2-gates
+uv run python -m factory reset && uv run python -m factory setup
+```
+
 **Adds:** `gates.py`: tests, lint, protected paths and human-written acceptance tests.
 
 **Diff:** `git diff stage-1-naive stage-2-gates -- factory/`
@@ -46,6 +52,11 @@ tests. But stopping at the first failure wastes the run.
 ---
 
 ## Stage 3: `stage-3-retry`
+
+```bash
+git checkout stage-3-retry
+uv run python -m factory reset && uv run python -m factory setup
+```
 
 **Adds:** a retry loop that feeds the gate output back to the agent (max 3 attempts).
 
@@ -66,6 +77,11 @@ half up. Every test passed because the acceptance tests had a gap.
 
 ## Stage 4: `stage-4-review`
 
+```bash
+git checkout stage-4-review
+uv run python -m factory reset && uv run python -m factory setup
+```
+
 **Adds:** `review.py`: one LLM reviewer that must return JSON, validated in code, failing closed.
 
 **Diff:** `git diff stage-3-retry stage-4-review -- factory/ prompts/`
@@ -82,6 +98,11 @@ approval rule is still code: a reviewer that approves while listing a blocker is
 ---
 
 ## Stage 5: `stage-5-panel` (also `main`)
+
+```bash
+git checkout stage-5-panel
+uv run python -m factory reset && uv run python -m factory setup
+```
 
 **Adds:** a panel of reviewers in parallel (correctness, security, conventions), SQLite state,
 and a cost report.
