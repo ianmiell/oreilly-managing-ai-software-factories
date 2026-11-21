@@ -11,7 +11,7 @@ def setup(cfg) -> None:
     """Create a fresh target repo from sample_project/."""
     target = cfg.path(cfg["target"]["repo"])
     if target.exists():
-        raise SystemExit(f"{target} already exists. Run `python -m factory reset` first.")
+        raise SystemExit(f"{target} already exists. Run `uv run python -m factory reset` first.")
     shutil.copytree(cfg.root / "sample_project", target)
     git = ["git", "-c", "user.name=factory", "-c", "user.email=factory@localhost"]
     subprocess.run([*git, "init", "-q", "-b", cfg["target"]["base_branch"]], cwd=target, check=True)
